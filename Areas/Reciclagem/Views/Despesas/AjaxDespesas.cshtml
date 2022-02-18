@@ -1,0 +1,45 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.DespesaV.ItemDespesaVM
+@await Html.PartialAsync("_ValidationScriptsPartial")
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" asp-for="Id" />
+<input type="hidden" asp-for="Ano" />
+<input type="hidden" asp-for="Mes" />
+<div class="row mb-1">
+    <div class="col-12">
+        <label asp-for="Data">Data:</label>
+        <input asp-for="Data" type="text" class="form-control data" placeholder="Escreva a Data...." />
+        <span asp-validation-for="Data"></span>
+    </div>
+</div>
+
+<div class="row mb-1">
+    <div class="col-12">
+        <label asp-for="ItensId">Item de Despesa:</label>
+        <select class="form-control select2 border" asp-for="ItensId" asp-items="@Model.Itens">
+            <option value="0" disabled selected>Escolha o item</option>
+        </select>
+        <span asp-validation-for="ItensId"></span>
+    </div>
+</div>
+
+<div class="row mb-1">
+    <div class="col-12">
+        <label asp-for="Valor">Valor:</label>
+        <input asp-for="Valor" type="text" class="form-control money" placeholder="Escreva o Valor...." />
+        <span asp-validation-for="Valor"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <label>Observação:</label>
+        <textarea class="form-control" rows="3" asp-for="Obs"></textarea>
+    </div>
+</div>
+
+
+

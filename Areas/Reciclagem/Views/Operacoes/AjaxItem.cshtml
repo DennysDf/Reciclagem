@@ -1,0 +1,48 @@
+﻿@model ICollection<Reciclagem.Areas.Reciclagem.Models.Operacao.ItensVM>
+@{
+    Layout = null;
+    var count = 0;
+}
+
+@foreach (var item in Model)
+{
+<tr>
+    @{ count++; }
+    <td class="text-nowrap">
+        @item.Nome
+    </td>
+    <td class="text-nowrap">
+        <span class="money1 @count @item.Id">@item.Peso</span>
+        Kg
+    </td>
+    @{ count++; }
+    <td class="text-nowrap">
+        R$
+        <span class="money1 @count  @item.Id">@item.Valor</span>
+    </td>
+    @{ count++; }
+    <td class="text-nowrap">
+        R$
+        @{
+            var a = Decimal.Parse(item.Valor.Replace(".", ",").Replace(",", "."));
+            var b = Decimal.Parse(item.Peso.Replace(".", ",").Replace(",", "."));
+            var c = Math.Round(a * b, 2);
+        }
+
+        <span class="money1 @count">@c</span>
+
+    </td>
+    <td class="text-nowrap" style="width:15px">
+
+        <span data-toggle="tooltip" title="Editar" data-placement="left" data-id="@item.Id" class="c-point edit"><i class="fa fa-pencil-alt mr-2"></i></span>
+
+        <span data-toggle="tooltip" title="Apagar" data-placement="left" data-id="@item.Id" class="c-point del text-danger"> <i class="fa fa-times"></i>  </span>
+    </td>
+</tr>
+}
+@{  count++; }
+<tr class="bg-secondary text-white ">
+    <td colspan="3">Total negociado</td>
+    <td colspan="2" class="">
+        R$ <span class="money1 @count">@ViewBag.Total</span></td>
+</tr>

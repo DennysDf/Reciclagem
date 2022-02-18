@@ -1,0 +1,37 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.ClientesFornecedores.ClientesFornecedoresVM
+@await Html.PartialAsync("_ValidationScriptsPartial")
+@{
+    Layout = null;
+}
+
+
+<div class="row">
+    <input type="hidden" asp-for="Id" />
+    <div class="col-sm-7 col-12">
+        <label>Nome*:</label>
+        <input type="text" class="form-control" asp-for="Nome" placeholder="Escreva o Nome..." autofocus />
+        <span asp-validation-for="Nome"></span>
+    </div>
+
+</div>
+<div class="row">
+
+    <div class="col-sm-9 col-12">
+        <label>Endereço*:</label>
+        <input type="text" autofocus class="form-control" asp-for="Endereco" placeholder="Escreva o Endereço..." />
+        <span asp-validation-for="Endereco"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-12">
+        <label>Cidade*:</label>
+        <input type="text" placeholder="Escreva a Cidade..." class="form-control" asp-for="Cidade" />
+        <span asp-validation-for="Cidade"></span>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <label>Telefone*:</label>
+        <input type="text" placeholder="(99) 9 9999-9999" class="form-control" asp-for="Telefone" />
+        <span asp-validation-for="Telefone"></span>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="auth-box bg-light border-top border-secondary">
+    <div id="loginform">
+        <p class="text-center font-weight-bold text-success">Verifique o código na sua caixa de e-mail.</p>
+        <p class="text-center">Código válido por 1 hora.</p>
+        <!-- Form -->
+        <form class="form-horizontal m-t-20" id="loginform" asp-action="ConfirmarEmail">
+            <input hidden id="email" value="@ViewBag.Email" />
+            <div class="row ">
+                <div class="col-12">
+                    <label class="font-weight-bold">Nova senha:   </label>
+                    <input autofocus type="text" class="form-control form-control-lg" placeholder="Nova senha..." aria-label="" aria-describedby="basic-addon1" required="">
+                    <span class="text-danger font-weight-bold"></span>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-12">
+                    <label class="font-weight-bold">Confirme a senha:   </label>
+                    <input autofocus type="text" class="form-control form-control-lg" placeholder="Confirme a senha..." aria-label="" aria-describedby="basic-addon1" required="">
+                    <span class="text-danger font-weight-bold"></span>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-12">
+                    <label class="font-weight-bold" data-toggle="tooltip" title="">Código:</label> <small><a class="reenviar" href="#">Reenviar código.</a></small>
+
+                    <input autofocus type="text" class="form-control form-control-lg" placeholder="Código recebido..." aria-label="" aria-describedby="basic-addon1" required="">
+                    <span class="text-danger font-weight-bold"></span>
+                </div>
+            </div>
+            <div class="row mt-3 float-right">
+                <div class="col-sm-12 ">
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" style="padding-top:100px" id="alert"  role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <form action="#" method="post">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-white"><i class="mdi mdi-alert"></i> ATENÇÃO <i class="mdi mdi-alert"></i> </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="font-weight-bold font-17" id="texto">Tem certeza que deseja reenviar?</span>
+                    <input type="hidden" name="clienteId" id="medicamento-form" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"> <i class="fa fa-times"></i> Cancelar</button>
+                    <button type="button" class="btn btn-success submit-form" id="delete-receituario" data-dismiss="modal"><i class="fa fa-check"></i> Confirmar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+   
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(".reenviar").click(function () {
+            $("#alert").modal("show");
+
+        });
+    </script>
+}
+

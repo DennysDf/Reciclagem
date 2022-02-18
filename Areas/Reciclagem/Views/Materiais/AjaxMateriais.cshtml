@@ -1,0 +1,15 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.Material.MateriaisVM
+@await Html.PartialAsync("_ValidationScriptsPartial")
+@{
+    Layout = null;
+}
+
+
+<div class="row">
+    <input type="hidden" asp-for="Id" />
+    <div class=" col-12">
+        <label>Nome*:</label>
+        <input type="text" class="form-control" asp-for="Nome" placeholder="Escreva o Nome..." autofocus />
+        <span asp-validation-for="Nome"></span>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.Relatorios.RelatoriosVM
+@{
+    ViewData["Title"] = $"{ViewBag.Tipo}";
+    ViewData["Caminho"] = $"<li> Relatórios</li> <li>{ViewBag.Tipo}</li>";
+
+    var mes = DateTime.Now.AddMonths(-1).Month;
+    var mesS = mes < 10 ? "0" + mes : mes.ToString();
+    var inicial = $"01/{mesS}/{DateTime.Now.AddMonths(-1).Year}";
+    var final = inicial.ParseDateTime().AddMonths(1).AddDays(-1).ToShortDateString();
+
+    var dataArr = final.Split("/");
+
+    var data = $"{dataArr[1]}/{mesS}/{dataArr[2]}";
+
+}
+
+<style>
+    .form-container {
+        background-color: #f7f7f7;
+        border: 3px solid #e9ecef
+    }
+
+
+</style>
+
+<form asp-action="Resultados" method="post">
+    <div class="row justify-content-center">
+        <div class="col-md-6 p-20 form-container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Início:</label>
+                    <input type="text" class="form-control data" asp-for="Inicio" value="@inicial" />
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Final:</label>
+                    <input type="text" class="form-control data" asp-for="Final" value="@data" />
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <label>@ViewBag.CliFor:</label>
+                    <select class="form-control select2" asp-items="@Model.ListCliFor" asp-for="ClienteFornecedorId">
+                        <option value="0">Todos os @{@ViewBag.CliFors}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-12 text-center">
+                    <button class="btn btn-cyan">
+                        <i class="fa fa-search"></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <input type="hidden" asp-for="Tipo" value="@Model.Tipo" />
+</form>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $(".select2").select2({ width: '100%' });
+        
+    </script>
+}

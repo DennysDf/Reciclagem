@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Redimentos";
+}
+
+
+
+<div class="row justify-content-center">
+    <div class="col-12 col-sm-6 col-md-3 col-xl-3 ">
+        <label class="text-nowrap">Ano:</label>
+        <select class="form-control" asp-items="@ViewBag.Anos" id="Ano" name="Ano">
+            
+        </select>
+
+    </div>
+</div>
+
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div id="grafico"></div>
+    </div>
+</div>
+
+@section Scripts{ 
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Ano").change(function () {
+            ajax($(this).val())
+        })
+
+        ajax($("#Ano").val())
+
+        function ajax(ano) {
+             $.get('@Url.Action("AjaxRedimentos")', { ano: ano }, function (response) {
+                    $("#grafico").html(response)
+             })
+        }
+
+    })
+
+
+
+</script>
+
+}

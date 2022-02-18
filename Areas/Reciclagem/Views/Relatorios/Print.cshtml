@@ -1,0 +1,82 @@
+﻿@model ICollection<Reciclagem.Areas.Reciclagem.Models.Relatorios.RelatoriosVM>
+@{
+    Layout = null;
+    decimal total = 0;
+    var count = 0;
+}
+<style>
+    body {
+        color: black;
+    }
+
+    .head-table {
+        font-size: 17pt;
+    }
+
+    .tbody-font {
+        font-size: 14pt;
+    }
+</style>
+
+
+
+<body>
+    <h3>Reciclagem Ipê</h3>
+
+    <div class="row text-center mb-3">
+        <div class="col-12">
+            <h3>
+                Relatório de  @{@ViewBag.Tipo}s <br />
+                <small>@ViewBag.Inicial à @ViewBag.Final </small>
+            </h3>
+        </div>
+    </div>
+
+    <table class="table table-sm">
+        <thead class="head-table">
+            <tr>
+                <th>Data</th>
+                <th>@ViewBag.CliFor</th>
+                <th>Infomações da @ViewBag.Tipo</th>
+
+            </tr>
+        </thead>
+        <tbody class="tbody-font">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-nowrap">@item.Data</td>
+                    <td class="text-nowrap">@item.Nome</td>
+                    <td class="text-nowrap">
+                        Qtd de materias @ViewBag.Tipo2:     <b>@item.Qtd</b> <br />
+                        Valor total :
+                        <b>
+                            R$ <span class="money @count">
+                                @{
+                                    var a = Math.Round(item.Valor, 2);
+                                    total += a;
+                                    @a
+                                }
+                            </span>
+                        </b>
+                    </td>
+
+                </tr>
+                count++;
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">
+                    <b>Total negocido:</b><small>(No intervalo definido)</small>
+                </td>
+                <td colspan="2">
+                    R$
+                    <span class="money font-weight-bold">@total</span>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</body>
+

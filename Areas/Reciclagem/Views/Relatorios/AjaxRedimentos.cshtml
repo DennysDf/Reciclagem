@@ -1,0 +1,365 @@
+﻿
+@{
+    Layout = null;
+}
+
+<b>Somatório</b>
+
+<ul class="">
+    <li style="color:#77B6EA">
+        <span>Vendas:</span>
+        <span id="vendas" class="font-weight-bold text-dark"></span>
+    </li>
+    <li>
+        <span style="color:#545454">Compras:</span>
+        <span id="compras" class="font-weight-bold"></span>
+    </li>
+</ul>
+
+
+<div class="row">
+    <div class="col-12">
+        <div id="redimento">
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div id="chartCompras">
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        <div id="chartVendas">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function formatNumber(num){
+        var total = String(num);
+        var totalArr = ("" + num + "").split(".")
+        var range = totalArr.slice().length
+        if (range == 1) {
+            total = num + ".00"
+        }
+        else if (range == 2 && ("" + totalArr[1] + "").length == 1) {
+            total = num + "0"
+        }
+        var input = $("<input>").val(total)
+        input.mask('#.##0,00', { reverse: true });
+        return "R$ " + input.val()
+    }
+
+
+    var a = JSON.parse('@Html.Raw(ViewBag.Teste)')
+
+    var total = JSON.parse('@Html.Raw(ViewBag.Total)')
+
+    var totais = []
+
+    $.each(total, function (i, e) {
+        totais.push(e.Valor);
+    })
+
+    var compras = totais[1];
+
+    $("#vendas").text(formatNumber(totais[0]));
+    $("#compras").text(formatNumber(totais[1]));
+
+
+    var options = {
+        chart: {
+            background: "#fff",
+            height: 370,
+            width: "100%",
+            type: 'line',
+            shadow: {
+                enabled: true,
+                color: '#000',
+                top: 18,
+                left: 7,
+                blur: 10,
+                opacity: 1
+            },
+            toolbar: {
+                show: false
+            }
+        },
+        colors: ['#77B6EA', '#545454'],
+        dataLabels: {
+            enabled: true,
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        series: a,
+        title: {
+            text: 'Somatório de @ViewBag.Anos',
+            align: 'center',
+            margin: 10,
+            offsetX: 0,
+            offsetY: 0,
+            floating: false,
+            style: {
+                fontSize: '16px',
+                color: '#263238'
+            }
+        },
+        grid: {
+            borderColor: '#e7e7e7',
+            row: {
+                colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                opacity: 0.5
+            },
+        },
+        markers: {
+
+            size: 6
+        },
+        xaxis: {
+            categories: ['Jan', 'Fev', 'Mar','Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            title: {
+                text: '.'
+            }
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'right',
+            floating: true,
+            offsetY: -25,
+            offsetX: -5
+        },
+        tooltip: {
+            y: {
+                formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                    return formatNumber(value)
+                },
+                title: {
+                    formatter: (seriesName) => seriesName,
+                },
+            }
+
+        }
+    }
+
+    var chart = new ApexCharts(
+        document.querySelector("#redimento"),
+        options
+    );
+
+    chart.render();
+</script>
+
+
+<script type="text/javascript">
+
+        $('.money').mask('#.##0,00', { reverse: true });
+
+        var objBanco = JSON.parse('@Html.Raw(ViewBag.QtdComprasChart)')
+
+        var arrNome = [];
+        $.each(objBanco, function (i, element) {
+            arrNome.push(element.Nome)
+        });
+
+        var arrQtd = [];
+        $.each(objBanco, function (i, element) {
+            arrQtd.push(element.Valor)
+        });
+
+
+        var options = {
+            chart: {
+                height: 300,
+                width: '100%',
+                type: 'bar',
+                background: '#fff'
+            },
+            series: [{
+                name: 'Qtd',
+                data: arrQtd
+            }],
+            xaxis: {
+                categories: arrNome,
+                title: {
+                    text: 'Compradores',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Quantidade',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top',
+                    },
+                    distributed: true
+                }
+            },
+            title: {
+                text: 'Gráfico por compras realizadas',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize: '16px',
+                }
+            },
+            subtitle: {
+                text: 'Sem período determinado',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 30,
+                floating: false,
+                style: {
+                    fontSize: '9px',
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                        return value
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            },
+            responsive: [{
+                breakpoint: 1000,
+                options: {}
+            }]
+        }
+
+        var chart = new ApexCharts(document.querySelector("#chartCompras"), options);
+
+        chart.render();
+
+
+</script>
+
+<script type="text/javascript">
+        var objBanco = JSON.parse('@Html.Raw(ViewBag.QtdVendasChart)')
+
+        var arrNome = [];
+        $.each(objBanco, function (i, element) {
+            arrNome.push(element.Nome)
+        });
+
+        var arrQtd = [];
+        $.each(objBanco, function (i, element) {
+            arrQtd.push(element.Valor)
+        });
+
+
+        var options = {
+            chart: {
+                width: '100%',
+                height: 300,
+                type: 'bar',
+                background: '#fff'
+            },
+            series: [{
+                name: 'Qtd',
+                data: arrQtd
+            }],
+            xaxis: {
+                categories: arrNome,
+                title: {
+                    text: 'Vendedores',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Quantidade',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top',
+                    },
+                    distributed: true
+                }
+            },
+            title: {
+                text: 'Gráfico por vendas realizadas',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize: '16px',
+                }
+            },
+            subtitle: {
+                text: 'Sem período determinado',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 30,
+                floating: false,
+                style: {
+                    fontSize: '9px',
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                        return value
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            }
+        }
+
+        var chart = new ApexCharts(document.querySelector("#chartVendas"), options);
+
+        chart.render();
+</script>

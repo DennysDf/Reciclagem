@@ -1,0 +1,101 @@
+﻿@model ICollection<Reciclagem.Areas.Reciclagem.Models.DespesaV.ItemDespesaVM>
+
+@{
+    Layout = null;
+}
+
+<style>
+    span.disabled {
+        cursor: not-allowed;
+    }
+
+    span.disabled i {
+        pointer-events: none;
+    }
+</style>
+
+
+<div class="row mt-5 mb-2">
+
+    <div class="col-1  col-sm-1 offset-sm-1">
+        <i class="fa fa-arrow-alt-circle-left fa-3x c-point mes text-dark" data-toggle="tooltip" title="Mês anterior" data-mes="@ViewBag.MesAnt" data-ano="@ViewBag.AnoAnt"></i>
+    </div>
+
+    <div class="col-10 col-sm-4 offset-sm-2 text-center">
+        <h3>
+            @ViewBag.Titulo
+        </h3>
+    </div>
+
+    <div class="col-1 col-sm-2 offset-sm-1 text-sm-right">
+        @if (ViewBag.Disabled != null)
+        {
+             <span class="py-5 @ViewBag.Disabled">
+            <i class="fa fa-arrow-alt-circle-right fa-3x"></i>
+        </span>
+
+        }
+        else
+        {
+             <span class="mes py-5 c-point text-dark" data-toggle="tooltip" title="Prómixo Mês" data-mes="@ViewBag.MesAdd" data-ano="@ViewBag.AnoAdd">
+            <i class="fa fa-arrow-alt-circle-right fa-3x "></i>
+        </span>
+
+        }
+
+  
+        
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12  col-sm-10">
+        <table id="table" class="table bg-white table-sm table-hover table-bordered table-responsive-lg datatables">
+            <thead class="thead-dark font-weight-bold">
+                <tr class="font-weight-bold">
+                    <th width="15">#</th>
+                    <th width="35">Data</th>
+                    <th class="text-nowrap">Tipo</th>
+                    <th>Despesa/Obs</th>
+                    <th>Valor</th>
+                    <th width="15"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+
+                @foreach (var item in Model)
+                {
+                    <tr class="">
+                        <td>@item.Id</td>
+                        <td>@item.Data</td>
+                        <td>
+                            @item.TipoDespesa
+                        </td>
+                        <td>
+                            @item.Item <br />
+                            @if (item.Descricao != null)
+                            { 
+                                <b>Obs:</b>
+                                <i>@item.Descricao</i>
+                            }
+                            
+                        </td>
+                        <td class="text-nowrap"><b> R$ </b>
+                            <span class="money">
+                                @item.Valor
+                            </span>
+                        </td>
+                        <td class="text-nowrap">
+                            <a href="#" data-toggle="tooltip" title="Editar Despesa" data-placement="left" data-id="@item.Id" class="c-point edit text-dark"><i class="fa fa-pencil-alt mr-2"></i></a>
+
+                            <span data-toggle="tooltip" title="Apagar" data-placement="left" data-id="@item.Id" class="c-point del text-danger"> <i class="fa fa-times"></i>  </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<input type="hidden" id="MesIndex" value="@ViewBag.Mes" />
+<input type="hidden" id="AnoIndex" value="@ViewBag.Ano" />

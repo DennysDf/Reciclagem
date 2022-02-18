@@ -1,0 +1,164 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.Operacao.OperacaoVM
+@{
+    var operacoes = new string[] { "Vendas", "Compras" };
+    var operacao = new string[] { "Venda", "Compra" };
+    ViewData["Title"] = $"{operacoes[Model.Tipo - 1]}";
+    ViewData["Caminho"] = $"<li> {operacoes[Model.Tipo - 1]} </li>";
+    var nomes = new string[] { "Cliente", "Fornecedor" };
+
+}
+
+
+
+
+<div class="row mb-3 ">
+    <div class="col-12 text-center">
+        <button data-id="0" id="modal-open" class="btn btn-success">
+            <i class="fa fa-plus-circle"></i>
+            <b>Incluir @operacao[Model.Tipo - 1]</b>
+        </button>
+    </div>
+</div>
+@if (Model.OperacoesList.Any())
+{
+    <div class="row mt-5">
+        <div class="col-sm-12 text-center">
+            <h3>
+                @operacoes[Model.Tipo - 1] em aberto
+            </h3>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-10">
+                <table id="table" class="table bg-white table-sm table-hover table-bordered table-responsive-lg datatables">
+                    <thead class="thead-dark font-weight-bold">
+                        <tr class="font-weight-bold">
+                            <th width="35px">#</th>
+                            <th width="35px">Data</th>
+                            <th class="text-nowrap">@nomes[Model.Tipo - 1]</th>
+                            <th width="35px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OperacoesList)
+                        {
+                            <tr class="p-10">
+                                <td>
+                                    @item.Id
+                                </td>
+                                <td>
+                                    @item.Data
+                                </td>
+                                <td class="text-nowrap">
+                                    @item.Fornecedor
+                                </td>
+                                <td class="text-nowrap">
+
+                                    <a href="@Url.Action("Itens", new { id =item.Id })" data-toggle="tooltip" title="Exibir Detalhes" data-placement="left" data-id="@item.Id" class="c-point edit text-dark"><i class="fa fa-search mr-2"></i></a>
+
+                                    <span data-toggle="tooltip" title="Apagar" data-placement="left" data-id="@item.Id" class="c-point del text-danger"> <i class="fa fa-times"></i>  </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+<div class="modal fade" role="dialog" data-backdrop="static" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <form asp-action="Index" method="post">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title title">Cadastrar @operacao[Model.Tipo -1] </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <label>Data*:</label>
+                            <input asp-for="Data" type="text" class="form-control data" placeholder="__/__/____" />
+                            <span asp-validation-for="Data"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>Vendendor*:</label>
+                            <select class="form-control select2" asp-for="ClienteFornecedorId" asp-items="@Model.ClientesFornecedores">
+                                <option value="0">Escolha o vendendor</option>
+                            </select>
+                            <span asp-validation-for="ClientesFornecedores"></span>
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="Tipo" />
+                    <input type="hidden" asp-for="Id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal" style="padding-top:120px" role="dialog" id="modal-delete" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fa fa-exclamation-triangle " style="color:yellow"></i>  ATENÇÃO <i style="color:yellow" class="fa fa-exclamation-triangle"></i></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Tem certeza que deseja apagar essa @operacao[Model.Tipo-1]?
+                    <input type="hidden" id="del-material" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                <button type="button" id="confirm-del" class="btn btn-success"><i class="fa fa-check-circle"></i> Confirmar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+<script>
+
+
+    $("#modal-open").click(function () {
+        $("#modal").modal("show")
+    });
+
+    $(".select2").select2({ width: '100%' });
+
+
+
+    $(".del").click(function () {
+            var id = $(this).data("id");
+            $("#del-material").val(id)
+            $("#modal-delete").modal("show")
+        });
+    
+    $("#confirm-del").click(function () {
+        window.location.href = "@Url.Action("Delete")?id=" + $("#del-material").val() + "&tipo="+ @Model.Tipo;
+    });
+
+</script>
+
+}

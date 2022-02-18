@@ -1,0 +1,90 @@
+﻿@model ICollection<Reciclagem.Areas.Reciclagem.Models.Relatorios.RelatoriosVM>
+
+@{
+    ViewData["Title"] = $"Lista de {ViewBag.Tipo}";
+    ViewData["Caminho"] = $"<li> Relatórios</li> <li>{ViewBag.Tipo}</li><li>Lista de {ViewBag.Tipo}</li>";
+}
+
+<style>
+
+    .imprimir{
+        display:none;
+    } 
+    @@media print {
+        .no-print{
+            display:none;
+        }
+
+        .imprimir{
+            display:block;
+        }
+    }
+
+</style>
+
+<div class="row m-2">
+    <div class="col-sm-12 text-center">
+        <h4>@ViewBag.Intervalo</h4>
+    </div>
+</div>
+
+<div class="row justify-content-center no-print">
+    <div class="col-sm-8 col-12" id="testando">
+        @Html.Partial("_Imprimir", Model)
+    </div>
+</div>
+
+<div id="setPrint" class="imprimir row">
+    <div class="col-sm-12" id="getPrint">
+        
+    </div>
+    
+</div>
+
+@section Scripts{
+
+<script type="text/javascript">
+
+    $(".money").mask('#.##0,00', { reverse: true });
+
+    $(document).ready(function () {
+
+        var table = $('#example').DataTable({
+            order:[],
+            dom: 'Bfrtip',
+            buttons: [{
+                text:'Imprimir'
+            }],
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+            }
+        });
+
+        setTimeout(function imprimir() {
+            $(".dt-button").click(function () {
+                ImiprimirTable()
+            })
+        },1000)            
+
+        function ImiprimirTable() {
+            $.post('@Url.Action("Print")', { Inicial: '@ViewBag.Inicial', Final: '@ViewBag.Final', ClienteFornecedorId: @ViewBag.ClienteFornecedorId, Tipo: @ViewBag.TipoId }, function (response) {
+                var a = $(response).find(".money").mask('#.##0,00', { reverse: true });
+                var b = $(a).mask('#.##0,00', { reverse: true })
+                var count = 0;
+
+                $("#getPrint").html(response)
+
+                $(".money").mask('#.##0,00', { reverse: true });
+
+                $("#setPrint").printThis({
+                    copyTagClasses: true,
+                    importStyle: true,
+                    printDelay: 800
+                });
+            })
+        }
+    });
+
+</script>
+
+}

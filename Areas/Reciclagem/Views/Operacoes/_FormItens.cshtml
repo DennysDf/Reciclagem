@@ -1,0 +1,66 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.Operacao.ItensVM
+@{
+    Layout = null;
+}
+
+<form action="#" id="form-material">
+    <input type="hidden" asp-for="IdMaterialOperacao" />
+
+    <div class="row    ">
+        <div class="col-sm-12">
+            <label>Material*:</label>
+            <select class="form-control select2" asp-for="MaterialId" asp-items="@Model.MaterailList">
+                <option value="0" selected disabled>Escolha o material</option>
+            </select>
+            <span asp-validation-for="MaterialId"></span>
+        </div>
+    </div>
+    <div class="row    ">
+        <div class="col-sm-12">
+            <label>Peso <small>(Kg)</small>*:</label>
+            <div class="input-group">
+                <div class="input-group-prepend bg-cyan">
+                    <span class="input-group-text  bg-secondary text-white" id="Peso2"><img width="20" height="20" src="~/images/Logo/46071.png" /></span>
+                </div>
+                <input type="text" class="form-control bg-white money" asp-for="Peso" placeholder="00,00" aria-describedby="Peso2">
+            </div>
+            <span asp-validation-for="Peso"></span>
+        </div>
+    </div>
+
+    <div class="row    ">
+        <div class="col-sm-12">
+            <label>Valor <small>(Por Kg)</small>*:</label>
+            <div class="input-group">
+                <div class="input-group-prepend bg-cyan">
+                    <span class="input-group-text  bg-secondary font-weight-bold" style="color:#000000" id="Valor2">
+                        R$
+                    </span>
+                </div>
+                <input asp-for="Valor" type="text" class="form-control bg-white money" placeholder="00,00" aria-describedby="Valor2" required>
+            </div>
+            <span asp-validation-for="Valor"></span>
+        </div>
+    </div>
+    <div class="row   ">
+        <div class="col-sm-12 ">
+            <label>Total:</label> <br />
+            <div class="input-group">
+                <div class="input-group-prepend bg-cyan">
+                    <span class="input-group-text  bg-secondary font-weight-bold" style="color:#000" id="subtotal">R$</span>
+                </div>
+                <input type="text" class="form-control bg-white money" id="total" placeholder="00,00" aria-describedby="subtotal" disabled>
+            </div>
+        </div>
+    </div>
+
+ 
+    <div class="row mt-3 justify-content-center">
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success" type="submit" id="add-material">Incluir Material</button>
+
+            <button class="btn btn-danger ml-2 d-none" type="reset" id="reset-form">Cancelar</button>
+        </div>
+    </div>
+
+</form>

@@ -1,0 +1,272 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.Operacao.ItensVM
+@{
+    string tipo = ViewBag.Tipo;
+    var idtipo = tipo.Equals("Venda") ? 1 : 2;
+    ViewData["Title"] = "Detalhes da " + tipo;
+    ViewData["Caminho"] = "<li> <a href=" + Url.Action("Index", new { tipo = idtipo }) + "> " + ViewBag.Tipo + "s  </a></li><li> Detalhes da " + tipo + " </li>";
+}
+
+
+
+<div class="row justify-content-center text-center">
+    <div class="col-sm-3 col-6 " style="background-color:#f7f7f7;border: 3px solid #e9ecef; border-right:none">
+        <label>Fornecedor:</label><br />
+        @ViewBag.Fornecedor
+    </div>
+    <div class="col-sm-3 col-6 " style="background-color:#f7f7f7; border: 3px solid #e9ecef; border-left:0">
+        <label>Data:</label><br />
+        @ViewBag.Data
+
+        <span></span>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-4 mt-4">
+        @Html.Partial("_FormItens")
+    </div>
+    <div class="col-sm-8 mt-3">
+
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h4>Materias @ViewBag.Operacao</h4>
+            </div>
+        </div>
+
+        <table id="table" class="mt-3 table bg-white table-sm table-hover table-bordered table-responsive-lg ">
+            <thead class="">
+                    <tr>
+                        <th>Material</th>
+                        <th>Peso <small>(Kg)</small> </th>
+                        <th>Valor <small>(Por Kg)</small> </th>
+                        <th>Total </th>
+                        <th width="15px"></th>
+                    </tr>
+                </thead>
+            <tbody id="corpo"></tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <button class="btn btn-dark" id="finalizar">
+                    Finalizar compra
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal" style="padding-top:120px" role="dialog" id="modal-delete" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fa fa-exclamation-triangle " style="color:yellow"></i>  ATENÇÃO <i style="color:yellow" class="fa fa-exclamation-triangle"></i></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Tem certeza que deseja apagar este material?
+                    <input type="hidden" id="del-material" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                <button type="button" id="confirm-del" class="btn btn-success"><i class="fa fa-check-circle"></i> Confirmar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" style="padding-top:120px" role="dialog" id="alert" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fa fa-exclamation-triangle " style="color:yellow"></i>  ATENÇÃO <i style="color:yellow" class="fa fa-exclamation-triangle"></i></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Adicione pelo um item à @tipo  para finaliza-la.
+                    <input type="hidden" id="del-material" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" style="padding-top:120px" role="dialog" id="modal-confirm" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Tem certeza que deseja finalizar essa @tipo?
+                    <input type="hidden" id="del-material" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                <button type="button" id="confirm-confirm" class="btn btn-success"><i class="fa fa-check-circle"></i> Confirmar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        
+        $("#finalizar").click(function () {
+            var tr = $("#table").find("tr")
+            console.log(tr.length)
+            if (tr.length == 2) {
+                $("#alert").modal("show")
+                return false;
+            } else {
+                $("#modal-confirm").modal("show")
+            }
+        })
+
+        $("#confirm-confirm").click(function () {
+            window.location.href = '@Url.Action("Finalizar", new { id = ViewBag.Id })'
+        })
+
+        function Deletar() {
+            $("#confirm-del").click(function () {
+                window.location.href = "@Url.Action("DeleteItem")?id=" + $("#del-material").val();
+            });
+
+            $(".del").click(function () {
+                var id = $(this).data("id");
+                $("#del-material").val(id)
+                $("#modal-delete").modal("show")
+            });
+        }
+
+
+        $("#reset-form").click(function () {
+            $("select.select2").select2('destroy')
+            $("#form-material").trigger("reset")
+            $("#IdMaterialOperacao").val(0);
+            $(".select2").select2({ width: '100%' });
+            $("#reset-form").addClass("d-none")
+            $("#add-material").text("Incluir Material")
+        })
+
+        function Editar() {
+            $(".edit").click(function () {
+
+                $("#add-material").text("Confirmar")
+                $("#reset-form").removeClass("d-none")
+
+                var id = $(this).data("id")
+                $("#IdMaterialOperacao").val(id);
+                var spans = $("span." + id)
+                var campos = ["Peso","Valor"];
+                $.each(spans, function (key, element) {
+                    $("#" + campos[key]).val($(this).text())
+                });
+                $.post('@Url.Action("AjaxItens")', { id }, function (response) {
+                    $("select.select2").select2('destroy')
+                    $("#MaterialId").val(response.MaterialId);
+                    $(".select2").select2({ width: '100%' });
+                },"json")
+                SomarTotal();
+            })
+        }
+
+        function arredonda(numero, casasDecimais) {
+            casasDecimais = typeof casasDecimais !== 'undefined' ? casasDecimais : 2;
+            return +(Math.floor(numero + ('e+' + casasDecimais)) + ('e-' + casasDecimais));
+        };
+
+        $("#Peso, #Valor").change(function () {
+            var peso = $("#Peso").val().replace(".", "").replace(",", ".");
+            var valor = $("#Valor").val().replace(".", "").replace(",",".");
+            if (peso != "" && valor != "") {
+               SomarTotal()
+            }
+        })
+
+        function SomarTotal() {
+            var peso = $("#Peso").val().replace(".", "").replace(",", ".");
+            var valor = $("#Valor").val().replace(".", "").replace(",", ".");
+            var total = arredonda(parseFloat(peso) * parseFloat(valor), 2)
+            var totalArr = ("" + total + "").split(".")
+            var range = totalArr.slice().length
+            if (range == 1) {
+                total = total + ",00"
+            }
+            else if (range == 2 && ("" + totalArr[1] + "").length == 1) {
+                total = total + "0"
+            }
+            $("#total").val(total).mask('# ##0,00', { reverse: true }).mask('#.##0,00', { reverse: true })
+
+        }
+
+        $("#form-material").submit(function (e) {
+            e.preventDefault()
+            setTimeout(function () {
+                var erros = $("body").find(".field-validation-error");
+                if (erros.length == 0) {
+                    submitForm()
+                    $("select.select2").select2('destroy')
+                    $("#form-material").trigger("reset")
+                    $("#IdMaterialOperacao").val(0);
+                    $(".select2").select2({ width: '100%' });
+                    $("#reset-form").addClass("d-none")
+                    $("#add-material").text("Incluir Material")
+                }
+            }, 100)
+            return false;
+        });
+
+        function submitForm() {
+            var peso = $("#Peso").val();
+            var valor = $("#Valor").val();
+            var materailid = $("#MaterialId").val();
+            var idMaterialOperacao = $("#IdMaterialOperacao").val();
+            tableAjax(peso, valor, materailid, idMaterialOperacao)
+        }
+
+        tableAjax(0,0,0,0)
+
+        function tableAjax(peso, valor, materailid, idMaterialOperacao) {
+            $.post('@Url.Action("AjaxItem")', { peso, valor, materailid, id: @ViewBag.Id, idMaterialOperacao }, function (response)
+            {
+                $("#corpo").html(response)
+                $('.money1').mask('# ##0,00', { reverse: true });
+                var valores = $(".money1");
+                $("[data-toggle='tooltip']").tooltip()
+
+                $.each(valores, function (key, element) {
+                    var a = this.classList;
+                    var texto = $(element).text();
+                    $("." + a[1] + "").text(texto.replace(" ", "."))
+                });
+                Deletar()
+                Editar()
+            });
+        }
+
+        $(".select2").select2({ width: '100%' });
+
+        $('.money').mask('#.##0,00', { reverse: true });
+
+    </script>
+}

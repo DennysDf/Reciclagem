@@ -1,0 +1,115 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.Home.PerfilVM
+@{
+    ViewData["Title"] = "Perfil";
+    ViewData["Caminho"] = "<li>Perfil</li>";
+}
+
+
+<div class="row">
+    <div class="col-12 text-right">
+        <button type="button" class="btn btn-secondary  edit"> <i class="fa fa-pencil-alt"></i> Editar</button>
+    </div>
+</div>
+
+<form asp-action="Perfil" method="post" enctype="multipart/form-data" >
+
+    <div class="row mt-2">
+        <div class="col-sm-6">
+            <label asp-for="Nome">Nome:</label>
+            <input type="text" asp-for="Nome" placeholder="Nome..." class="form-control"  />
+            <span asp-validation-for="Nome"></span>
+        </div>
+        <div class="col-sm-6">
+            <label asp-for="Email">E-mail:</label><small> Será usado para recuperar senha.</small>
+            <input type="text" asp-for="Email" placeholder="Email..." class="form-control"  />
+            <span asp-validation-for="Email"></span>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-6">
+            <label asp-for="Senha">Senha atual:</label> <small>Para atualizar a senha confirme a senha atual.</small>
+            <input asp-for="Senha" type="password" class="form-control"  placeholder="Senha atual..." />
+            <span asp-validation-for="Senha"></span>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-sm-6">
+            <label asp-for="SenhaN">Nova senha:</label>
+            <input type="password" asp-for="SenhaN" placeholder="Senha..." class="form-control"  />
+            <span asp-validation-for="SenhaN"></span>
+        </div>
+        <div class="col-sm-6">
+            <label asp-for="ConfirSenha">Confirme a senha:</label>
+            <input type="password" asp-for="ConfirSenha" placeholder="Confirme a senha..." class="form-control"  />
+            <span asp-validation-for="ConfirSenha"></span>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-sm-6">
+            <label for="Foto">Foto:</label>
+            <input type="file" name="Foto" class="form-control"  />            
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-sm-12 text-center font-18 font-weight-bold">
+            Empresa
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <label asp-for="NomeConsultorio">Nome:</label>
+            <input type="text" asp-for="NomeConsultorio" placeholder="Consultorio..." class="form-control"  />
+            <span asp-validation-for="NomeConsultorio"></span>
+        </div>
+        <div class="col-sm-6">
+            <label asp-for="Endereco">Endereço:</label>
+            <input type="text" asp-for="Endereco" placeholder="Endereço..." class="form-control"  />
+            <span asp-validation-for="Endereco"></span>
+        </div>
+    </div>
+    <div class="row my-3 d-none" id="row-submit">
+        <div class="col-12 text-center">
+            <button class="btn btn-cyan" type="submit">Salvar</button>
+        </div>
+    </div>
+</form>
+@section Scripts{ 
+<script type="text/javascript">
+
+    $("#Telefone").mask('(00) 0 0000-0000');
+
+        @if (Model.SenhaN == null)
+        {
+            <text>
+
+            $(".form-control").attr("readonly", true)
+            $(".edit").click(function () {
+                $(".form-control").removeAttr("readonly")
+                $("#row-submit").removeClass("d-none")
+                $(this).addClass("d-none")
+            });
+            </text>
+
+        }
+        else
+        {
+            <text>
+            
+                
+                $("#row-submit").removeClass("d-none")
+                $(".edit").addClass("d-none")
+            
+            </text>
+
+        }
+
+
+
+</script>
+}
+

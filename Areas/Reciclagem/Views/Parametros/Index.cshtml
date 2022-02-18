@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "Parametros";
+    ViewData["Caminho"] = "<li> Parametros</li> ";
+}
+
+<style>
+    .box {
+        position: relative;
+        top: 0;
+        transition: top ease 0.4s;
+    }
+
+        .box:hover {
+            top: -10px;
+            color: #08B9C7;
+        }
+</style>
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-3 text-center">
+        <a href="@Url.Action("Index","Materiais")" style="color:inherit">
+            <span class="text-center box">
+                <i class="fa fa-trash fa-5x"></i>
+                <p>
+                    Materiais
+                </p>
+            </span>
+        </a>
+    </div>
+    <div class="col-sm-3 text-center">
+        <a href="@Url.Action("Index","ClientesFornecedores")" style="color:inherit">
+            <span class="text-center box">
+                <i class="fa fa-users fa-5x"></i>
+                <p>
+                    Clientes/Fornecedores
+                </p>
+            </span>
+        </a>
+    </div>
+</div>
+

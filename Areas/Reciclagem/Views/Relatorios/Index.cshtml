@@ -1,0 +1,53 @@
+﻿  
+@{
+    ViewData["Title"] = "Relatórios";
+    ViewData["Caminho"] = "<li> Relatórios</li> ";
+}
+
+<style>
+    .box {
+        position: relative;
+        top: 0;
+        transition: top ease 0.4s;
+    }
+
+        .box:hover {
+            top: -10px;
+            color: #08B9C7;
+        }
+</style>
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-4 col-6 col-md-3 text-center">
+        <a href="@Url.Action("Operacao", new { id = 2 })" style="color:inherit">
+            <span class="text-center box">
+                <i class="fa fa-cart-plus fa-5x"></i>
+                <p>
+                    Compras
+                </p>
+            </span>
+        </a>
+    </div>
+    <div class="col-sm-4 col-6 col-md-3 text-center">
+        <a href="@Url.Action("Operacao", new { id = 1 })" style="color:inherit">
+            <span class="text-center box">
+                <i class="fa fa-truck fa-5x"></i>
+                <p>
+                    Vendas
+                </p>
+            </span>
+        </a>
+    </div>
+    <div class="col-sm-4 col-6 col-md-3 text-center">
+        <a href="@Url.Action("Redimentos")" style="color:inherit" class="mt-0">
+            <span class="text-center box">
+                <i class="ti-money fa-5x" aria-hidden="true"></i>
+                <p>
+                    Redimentos
+                </p>
+            </span>
+        </a>
+    </div>
+</div>
+

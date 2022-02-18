@@ -1,0 +1,136 @@
+﻿@model ICollection<Reciclagem.Areas.Reciclagem.Models.Operacao.ItensVM>
+@{
+    ViewData["Title"] = "Detalhes da " + ViewBag.Tipo;
+    ViewData["Caminho"] = $"<li> Relatórios</li> <li>{ViewBag.Tipo}</li><li>Lista de {ViewBag.Tipo}</li><li> Detalhes da " + ViewBag.Tipo + " </li> ";
+
+    var count = 0;
+}
+
+<div class="row justify-content-center text-center">
+    <div class="col-sm-3 col-6 " style="background-color:#f7f7f7;border: 3px solid #e9ecef; border-right:none">
+        <label>Fornecedor:</label><br />
+        @ViewBag.Fornecedor
+    </div>
+    <div class="col-sm-3 col-6 " style="background-color:#f7f7f7; border: 3px solid #e9ecef; border-left:0">
+        <label>Data:</label><br />
+        @ViewBag.Data
+
+        <span></span>
+
+    </div>
+</div>
+
+<div class="row m-3">
+    <div class="col-sm-12 text-center">
+        <h4>
+            Materias @ViewBag.Operacao
+        </h4>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-9">
+        <table class="table table-sm bg-white table-bordered table-responsive-lg" >
+            <thead class="thead-light"  >
+                <tr>
+                    <th>Material</th>
+                    <th>Peso <small>(Kg)</small> </th>
+                    <th>Valor <small>(Por Kg)</small> </th>
+                    <th>Total </th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @{ count++; }
+                    <td class="text-nowrap">
+                        @item.Nome
+                    </td>
+                    <td class="text-nowrap">
+                        <span class="money @count @item.Id">@item.Peso</span>
+                        Kg
+                    </td>
+                    @{ count++; }
+                    <td class="text-nowrap">
+                        R$
+                        <span class="money @count  @item.Id">@item.Valor</span>
+                    </td>
+                    @{ count++; }
+                    <td class="text-nowrap">
+                        R$
+                        @{
+                            var a = Decimal.Parse(item.Valor.Replace(".", ",").Replace(",", "."));
+                            var b = Decimal.Parse(item.Peso.Replace(".", ",").Replace(",", "."));
+                            var c = Math.Round(a * b, 2);
+                        }
+
+                        <span class="money @count">@c</span>
+
+                    </td>
+
+                </tr>
+            }
+            @{ count++; }
+            <tr class="bg-secondary text-white ">
+                <td colspan="3">Total negociado</td>
+                <td colspan="2" class=" text-nowrap">
+                    R$ <span class="money @count">@ViewBag.Total</span>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <button class="btn btn-danger" id="cancelar">
+            <i class="fa fa-times"></i> Cancelar @ViewBag.Tipo
+        </button>
+    </div>
+</div>
+
+
+<div class="modal" style="padding-top:120px" role="dialog" id="modal-confirm" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Tem certeza que deseja cancelar essa @ViewBag.Tipo?
+                    <input type="hidden" id="del-material" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                <button type="button" id="confirm-confirm" class="btn btn-success"><i class="fa fa-check-circle"></i> Confirmar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+<script type="text/javascript">
+    
+    $(".money").mask('#.##0,00', { reverse: true });
+
+    $("#cancelar").click(function () {
+        $("#modal-confirm").modal("show")
+    })
+
+    $("#confirm-confirm").click(function () {
+        window.location.href = '@Url.Action("Cancelar", new { id = ViewBag.Id })'
+    })
+
+</script>
+
+}

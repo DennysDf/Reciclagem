@@ -1,0 +1,140 @@
+﻿@{
+    ViewData["Caminho"] = "<li> Despesas </li>";
+    ViewData["Title"] = "Despesas";
+}
+
+
+<div class="row mb-3">
+    <div class="col-12 text-center">
+        <button data-id="0" id="modal-open" class="btn btn-success">
+            <i class="fa fa-plus-circle"></i>
+            <b>Incluir Despesa</b>
+        </button>
+    </div>
+</div>
+
+<div class="container-fluid" id="table-here">
+    
+
+</div>
+
+<div class="modal fade" role="dialog" data-backdrop="static" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <form asp-action="Index" method="post">                
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title title">Cadastrar Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" style="padding-top:120px" role="dialog" id="modal-delete" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fa fa-exclamation-triangle " style="color:yellow"></i>  ATENÇÃO <i style="color:yellow" class="fa fa-exclamation-triangle"></i></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Tem certeza que deseja apagar essa Despesa?
+                    <input type="hidden" id="del-despesa" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                <button type="button" id="confirm-del" class="btn btn-success"><i class="fa fa-check-circle"></i> Confirmar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+<script>
+
+    function functions() {
+        $(".edit").click(function () {
+            $.post('@Url.Action("AjaxDespesas")', { id: $(this).data("id")}, function (response) {
+                $("#modal-body").html(response);
+                $("#Mes").val($("#MesIndex").val())
+                $("#Ano").val($("#AnoIndex").val())
+                $("#modal").modal("show");
+            })
+        })
+
+        $(".mes").click(function () {            
+            ajaxTable($(this).data("mes"), $(this).data("ano"))
+        })
+
+       $(".del").click(function () {
+            var id = $(this).data("id");
+            $("#del-despesa").val(id)
+            $("#modal-delete").modal("show")
+        });
+
+        $("#confirm-del").click(function () {
+            window.location.href = "@Url.Action("DeleteDespesa")?id=" + $("#del-despesa").val()
+        });
+
+    }
+
+
+    function ajaxTable(mes, ano) {
+        $.get('@Url.Action("AjaxTable")', { mes, ano }, function (response) {
+            $("#table-here").html(response)
+            functions()
+            $('.money').mask('#.##0,00', { reverse: true });
+            $("#table").DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+                }
+            }).order([1, 'asc'])
+
+        })
+    }
+
+    ajaxTable(@ViewBag.Mes,@ViewBag.Ano)
+
+
+
+    $("#modal-open").click(function () {
+        var id = $(this).data("id");
+        $.post('@Url.Action("AjaxDespesas")', { "id": id }, function (response) {
+            $("#modal-body").html(response);
+            $("#Mes").val($("#MesIndex").val())
+            $("#Ano").val($("#AnoIndex").val())
+            $(".select2").select2({ width: '100%' })
+            if (id !=0) {
+                $(".title").text("Editar Item")
+            } else {
+                $(".title").text("Cadastrar Item")
+            }
+            $('.money').mask('#.##0,00', { reverse: true });
+            $(".data").datetimepicker({ useCurrent: false, maxDate: $.now(), format: 'DD/MM/YYYY', locale: "pt-br" });
+            $("#modal").modal("show");
+
+        
+        })
+    })
+
+
+</script>
+
+}

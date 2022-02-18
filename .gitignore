@@ -1,0 +1,17 @@
+#Ignore
+.vs/
+.vscode/
+node_modules/
+[Bb]in/
+[Oo]bj/
+[Pp]roperties/
+wwwroot/*
+
+
+
+*.user
+*.sln
+appsettings.Development.json
+
+
+

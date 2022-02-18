@@ -1,0 +1,159 @@
+﻿@model ICollection<Reciclagem.Areas.Reciclagem.Models.DespesaV.ItemDespesaVM>
+@{
+    ViewData["Caminho"] = "<li> Parametros</li> <li> Despesas </li>";
+    ViewData["Title"] = "Despesas";
+}
+
+
+<div class="row mb-3">
+    <div class="col-12 text-center">
+        <button data-id="0" id="modal-open" class="btn btn-success">
+            <i class="fa fa-plus-circle"></i>
+            <b>Incluir Item</b>
+        </button>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row justify-content-center table-responsive">
+        <div class="col-md-9 offset-sm-2">
+            <table id="table" class="table bg-white table-sm table-hover table-bordered  datatables">
+                <thead class="thead-dark font-weight-bold">
+
+                    <tr class="font-weight-bold">
+                        <th width="15">#</th>
+                        <th>Nome</th>
+                        <th>Tipo</th>                        
+                        <th width="15px"></th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td width="15">@item.Id</td>
+                        <td class="text-nowrap">@item.Descricao</td>
+                        <td class="text-nowrap">@item.TipoDespesa</td>
+                        <td class="text-nowrap" width="15">
+                            <span data-toggle="tooltip" title="Editar" data-placement="left" data-id="@item.Id" class="c-point edit"><i class="fa fa-pencil-alt mr-2"></i></span>
+
+                            <span data-toggle="tooltip" title="Apagar" data-placement="left" data-id="@item.Id" class="c-point del text-danger"> <i class="fa fa-times"></i>  </span>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+
+                @*<tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.Id
+                            </td>
+                            <td class="text-nowrap">
+                                @item.Descricao
+                            </td>
+                            <td class="text-nowrap">
+                                @item.TipoDespesa
+                            </td>>
+                            <td class="text-nowrap" style="padding-top:15px">
+
+                                
+                        </tr>
+                    }
+                </tbody>*@
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" role="dialog" data-backdrop="static" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <form asp-action="Cadastrar" method="post">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title title">Cadastrar Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" style="padding-top:120px" role="dialog" id="modal-delete" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fa fa-exclamation-triangle " style="color:yellow"></i>  ATENÇÃO <i style="color:yellow" class="fa fa-exclamation-triangle"></i></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="font-weight-bold font-18">
+                    Tem certeza que deseja apagar este item de despesa?
+                    <input type="hidden" id="del-material" />
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times-circle"></i>  Fechar</button>
+                <button type="button" id="confirm-del" class="btn btn-success"><i class="fa fa-check-circle"></i> Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $("#modal-open, .edit").click(function () {
+            var id = $(this).data("id");
+
+            $.post('@Url.Action("AjaxCadastrar")', { "id": id }, function (response) {
+
+                $("#modal-body").html(response);
+                $(".select2").select2({ width: '100%' })
+                if (id !=0) {
+                    $(".title").text("Editar Item")
+                } else {
+                    $(".title").text("Cadastrar Item")
+                }
+                $("#modal").modal("show");
+            })
+        })
+
+
+        $(".del").click(function () {
+            var id = $(this).data("id");
+            $("#del-material").val(id)
+            $("#modal-delete").modal("show")
+        });
+
+        $("#confirm-del").click(function () {
+            window.location.href = "@Url.Action("Delete")?id=" + $("#del-material").val();
+        });
+
+        $(".table").DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+            }
+        }).order([1, 'asc'])
+
+    </script>
+}
+

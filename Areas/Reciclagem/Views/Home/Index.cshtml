@@ -1,0 +1,545 @@
+﻿@inject IUser _user;
+
+@{
+    ViewData["Title"] = "Início";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    #chart {
+        max-width: 650px;
+        margin: 35px auto;
+    }
+</style>
+
+<div class="row">
+
+    <div class="col-md-6 col-lg-3 col-xlg-3">
+        <div class="card card-hover text-white">
+            <div class="box bg-theme text-center">
+                <i class="fa fa-cart-plus m-b-5 font-16"></i>
+                <h5 class="m-b-0 m-t-5">@ViewBag.QtdCompras</h5>
+                <small class="font-light">Total de Compras realizadas</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 col-xlg-3">
+        <div class="card card-hover text-white">
+            <div class="box bg-cyan text-center">
+                <i class="fa fa-truck m-b-5 font-16"></i>
+                <h5 class="m-b-0 m-t-5">@ViewBag.QtdVendas</h5>
+                <small class="font-light">Total de Vendas realizadas</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 col-xlg-3">
+        <div class="card card-hover text-white">
+            <div class="box bg-purple text-center">
+                <i class="fa  fa-users m-b-5 font-16"></i>
+                <h5 class="m-b-0 m-t-5">@ViewBag.QtdVendReceb</h5>
+                <small class="font-light">Total de Clientes/Fornecedores</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 col-xlg-3">
+        <div class="card card-hover text-white">
+            <div class="box bg-info text-center">
+                <i class="fa fa-trash m-b-5 font-16"></i>
+                <h5 class="m-b-0 m-t-5">@ViewBag.QtdMaterias</h5>
+                <small class="font-light">Total de Materias</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<span class="font-20 font-weight-bold mb-3">Relatório geral de compras</span> <br />
+
+<div class="row">
+    <div class="col-sm-12 col-md-6 col-12">
+        <div id="chartCompras">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-12">
+        <div id="piechartCompra">
+
+        </div>
+    </div>
+</div>
+
+<span class="font-20 font-weight-bold mb-3">Relatório geral de vendas</span> <br />
+
+<div class="row">
+    <div class="col-sm-12 col-md-6 col-12">
+        <div id="chartVendas">
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-12">
+        <div id="piechartVenda">
+
+        </div>
+    </div>
+</div>
+
+<span class="font-20 font-weight-bold mb-3">Rendimentos mensais - @DateTime.Now.Year</span> <br />
+
+<div id="teste1"></div>
+
+@section Scripts{
+
+
+
+    <script type="text/javascript">
+
+        $('.money').mask('#.##0,00', { reverse: true });
+
+        var objBanco = JSON.parse('@Html.Raw(ViewBag.QtdComprasChart)')
+
+        var arrNome = [];
+        $.each(objBanco, function (i, element) {
+            arrNome.push(element.Nome)
+        });
+
+        var arrQtd = [];
+        $.each(objBanco, function (i, element) {
+            arrQtd.push(element.Valor)
+        });
+
+
+        var options = {
+            chart: {
+                height: 300,
+                width: '100%',
+                type: 'bar',
+                background: '#fff'
+            },
+            series: [{
+                name: 'Qtd',
+                data: arrQtd
+            }],
+            xaxis: {
+                categories: arrNome,
+                title: {
+                    text: 'Compradores',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Quantidade',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top',
+                    },
+                    distributed: true
+                }
+            },
+            title: {
+                text: 'Gráfico por compras realizadas',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize: '16px',
+                }
+            },
+            subtitle: {
+                text: 'Sem período determinado',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 30,
+                floating: false,
+                style: {
+                    fontSize: '9px',
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                        return value
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            },
+            responsive: [{
+                breakpoint: 1000,
+                options: {}
+            }]
+        }
+
+        var chart = new ApexCharts(document.querySelector("#chartCompras"), options);
+
+        chart.render();
+
+
+    </script>
+
+    <script type="text/javascript">
+        var objBanco = JSON.parse('@Html.Raw(ViewBag.QtdVendasChart)')
+
+        var arrNome = [];
+        $.each(objBanco, function (i, element) {
+            arrNome.push(element.Nome)
+        });
+
+        var arrQtd = [];
+        $.each(objBanco, function (i, element) {
+            arrQtd.push(element.Valor)
+        });
+
+
+        var options = {
+            chart: {
+                width: '100%',
+                height: 300,
+                type: 'bar',
+                background: '#fff'
+            },
+            series: [{
+                name: 'Qtd',
+                data: arrQtd
+            }],
+            xaxis: {
+                categories: arrNome,
+                title: {
+                    text: 'Vendedores',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Quantidade',
+                    rotate: 90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: '9px',
+                        cssClass: 'apexcharts-yaxis-title',
+                    },
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        position: 'top',
+                    },
+                    distributed: true
+                }
+            },
+            title: {
+                text: 'Gráfico por vendas realizadas',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize: '16px',
+                }
+            },
+            subtitle: {
+                text: 'Sem período determinado',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 30,
+                floating: false,
+                style: {
+                    fontSize: '9px',
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                        return value
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            }
+        }
+
+        var chart = new ApexCharts(document.querySelector("#chartVendas"), options);
+
+        chart.render();
+    </script>
+
+    <script type="text/javascript">
+
+        var objBanco = JSON.parse('@Html.Raw(ViewBag.materialMaisVendidos)')
+
+        var arrNome = [];
+        $.each(objBanco, function (i, element) {
+            arrNome.push(element.Nome)
+        });
+
+        var arrQtd = [];
+        $.each(objBanco, function (i, element) {
+            arrQtd.push(element.Valor)
+        });
+
+        var options = {
+            chart: {
+                height: 300,
+                width: '100%',
+                type: 'donut',
+                background: '#fff'
+            },
+            dataLabels: {
+                enabled: true,
+            },
+            labels: arrNome,
+            series: arrQtd,
+            responsive: [{
+                breakpoint: 900,
+                options: {
+                    chart: {
+                        
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }],
+            legend: {
+                position: 'right',
+                offsetY: 0,
+                height: 230,
+            },
+            title: {
+                text: 'Porcetagem venda de materias',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize: '16px',
+                }
+            },
+            tooltip : {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                        return null
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            }
+
+        }
+
+
+
+        var chart = new ApexCharts(
+            document.querySelector("#piechartVenda"),
+            options
+        );
+
+        chart.render();
+    </script>
+
+    <script type="text/javascript">
+
+        var objBanco = JSON.parse('@Html.Raw(ViewBag.materialMaisCompro)')
+
+        var arrNome = [];
+        $.each(objBanco, function (i, element) {
+            arrNome.push(element.Nome)
+        });
+
+        var arrQtd = [];
+        $.each(objBanco, function (i, element) {
+            arrQtd.push(element.Valor)
+        });
+
+        var options = {
+            chart: {
+                height: 300,
+                width: '100%',
+                type: 'donut',
+                background: '#fff'
+            },
+            dataLabels: {
+                enabled: true,
+            },
+            labels: arrNome,
+            series: arrQtd,
+            responsive: [{
+                breakpoint: 900,
+                options: {
+                    chart: {
+                        
+                    },
+                    legend: {
+                        show: false
+                    }
+                }
+            }],
+            legend: {
+                position: 'right',
+                offsetY: 0,
+                height: 230,
+            },
+            title: {
+                text: 'Porcetagem de compras de materias',
+                align: 'center',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize: '16px',
+                }
+            },
+            tooltip : {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+                        return  null
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            }
+
+        }
+
+
+
+        var chart = new ApexCharts(
+            document.querySelector("#piechartCompra"),
+            options
+        );
+
+        chart.render();
+    </script>
+
+    <script type="text/javascript">
+
+        var a = JSON.parse('@Html.Raw(ViewBag.Teste)')
+
+        var options = {
+            chart: {
+                background: "#fff",
+                height: 370,
+                width: "100%",
+                type: 'line',
+                shadow: {
+                    enabled: true,
+                    color: '#000',
+                    top: 18,
+                    left: 7,
+                    blur: 10,
+                    opacity: 1
+                },
+                toolbar: {
+                    show: false
+                }
+            },
+            colors: ['#77B6EA', '#545454'],
+            dataLabels: {
+                enabled: true,
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            series: a,
+            title: {
+                text: 'Rendimentos mensais',
+                align: 'center'
+            },
+            grid: {
+                borderColor: '#e7e7e7',
+                row: {
+                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                    opacity: 0.5
+                },
+            },
+            markers: {
+
+                size: 6
+            },
+            xaxis: {
+                categories: ['Jan', 'Fev', 'Mar','Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                title: {
+                    text: '.'
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                floating: true,
+                offsetY: -25,
+                offsetX: -5
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+
+                        var total = String(value);
+                        var totalArr = ("" + value + "").split(".")
+                        var range = totalArr.slice().length
+                        if (range == 1) {
+                            total = value + ".00"
+                        }
+                        else if (range == 2 && ("" + totalArr[1] + "").length == 1) {
+                            total = value + "0"
+                        }
+                        var input = $("<input>").val(total)
+                        input.mask('#.##0,00', { reverse: true });
+                        return "R$ " + input.val()
+                    },
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
+
+            }
+        }
+
+        var chart = new ApexCharts(
+            document.querySelector("#teste1"),
+            options
+        );
+
+        chart.render();
+    </script>
+
+}

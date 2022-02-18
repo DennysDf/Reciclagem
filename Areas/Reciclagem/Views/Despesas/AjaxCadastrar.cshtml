@@ -1,0 +1,23 @@
+﻿@model Reciclagem.Areas.Reciclagem.Models.DespesaV.ItemDespesaVM
+@await Html.PartialAsync("_ValidationScriptsPartial")
+@{
+    Layout = null;
+}
+
+<input type="hidden" asp-for="Id"/>
+<div class="row">
+    <div class="col-12">
+        <label>Tipo de Despesa:</label>
+        <select class="form-control select2" asp-for="TipoId" asp-items="@Model.TipoDespesas">
+            <option value="0" disabled>Escolha o tipo</option>
+        </select>
+        <span asp-validation-for="TipoId"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <label>Item:</label>
+        <input type="text" class="form-control" placeholder="Escreva o Item..." asp-for="Descricao" />
+        <span asp-validation-for="Descricao"></span>
+    </div>
+</div>
